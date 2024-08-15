@@ -4,7 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 
 async function getFeaturedProducts(): Promise<Product[]> {
-  const response = await api("/products/featured");
+  const response = await api("/products/featured",{
+    next:{
+      revalidate: 60 * 60 //1 hour
+    }
+  });
   const products = await response.json();
   return products;
 }
@@ -13,10 +17,11 @@ export default async function Home() {
   const [highlightedProduct, ...otherProducts] = await getFeaturedProducts();
 
   return (
-    <div className="grid max-h-[860px] grid-cols-9 grid-rows-6 gap-6">
+    <div
+      className="grid max-h-[860px] lg:grid-cols-9 lg:grid-rows-6 sm:grid-cols-6 sm:grid-rows-6 gap-6">
       <Link
         href={`/product/${highlightedProduct.slug}`}
-        className="group relative col-span-6 row-span-6 rounded-lg bg-zinc-900 overflow-hidden flex justify-center items-baseline"
+        className="group relative lg:col-span-6 lg:row-span-6 sm:col-span-3 sm:row-span-6 rounded-lg bg-zinc-900 overflow-hidden flex justify-center items-baseline"
       >
         <Image
           className="group-hover:scale-105 transition-transform duration-300"
@@ -43,7 +48,7 @@ export default async function Home() {
           <Link
             key={product.id}
             href={`/product/${product.slug}`}
-            className="group relative col-span-3 row-span-3 rounded-lg bg-zinc-900 overflow-hidden flex justify-center items-baseline"
+            className="group relative lg:col-span-3 lg:row-span-3 sm:col-span-3 sm:row-span-6 rounded-lg bg-zinc-900 overflow-hidden flex justify-center items-baseline"
           >
             <Image
               className="group-hover:scale-105 transition-transform duration-300"
